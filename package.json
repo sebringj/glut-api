@@ -1,0 +1,24 @@
+{
+  "name": "glut-api",
+  "version": "1.0.0",
+  "description": "api for the glut ecommerce system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebringj/glut-api.git"
+  },
+  "keywords": [
+    "ecommerce",
+    "node",
+    "api"
+  ],
+  "author": "Jason Sebring",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sebringj/glut-api/issues"
+  },
+  "homepage": "https://github.com/sebringj/glut-api#readme"
+}
