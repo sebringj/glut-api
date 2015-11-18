@@ -47,7 +47,7 @@ router.delete('/:id', cors(), security.auth(), security.authAdmin(), function(re
       { _id: req.params.id },
       { upc: req.params.id }
     ]
-  }, req.body).exec()
+  }).exec()
   .then(function(doc) {
     res.json({ product: doc });
   })
