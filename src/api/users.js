@@ -4,8 +4,9 @@ let router = require('express').Router();
 let User = require('glut-models').models.User;
 let security = require('../security');
 let _ = require('lodash');
+var cors = require('cors');
 
-router.get('/', security.auth(), security.authAdmin(), function(req, res) {
+router.get('/', cors(), security.auth(), security.authAdmin(), function(req, res) {
   User.find({}).sort({ modified: -1 }).exec()
 	.then(function(docs) {
 		res.json(docs);

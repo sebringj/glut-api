@@ -3,6 +3,7 @@
 var router = require('express').Router();
 var Transaction = require('glut-models').models.Transaction;
 var security = require('../security');
+var cors = require('cors');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.find({}).sort({ modified: -1 }).exec()
