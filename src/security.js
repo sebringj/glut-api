@@ -33,7 +33,7 @@ module.exports = {
 					if (err) { return res.status(500).send('server error'); }
 					next();
 				});
-			});
+			})(req, res, next);
 		};
 	},
 	authAdmin: function() {
