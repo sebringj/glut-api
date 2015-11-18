@@ -6,7 +6,7 @@ var security = require('../security');
 var cors = require('cors');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
-  Transaction.find({}).sort({ modified: -1 }).exec()
+  Transaction.find(req.query).sort({ modified: -1 }).exec()
 	.then(function(docs) {
 		res.json(docs);
 	})

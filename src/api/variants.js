@@ -7,7 +7,7 @@ let _ = require('lodash');
 var cors = require('cors');
 
 router.get('/', cors(), security.auth(), security.authAdmin(), function(req, res) {
-  Variant.find({}).exec()
+  Variant.find(req.query).exec()
   .then(function(docs) {
     res.json(docs);
   })

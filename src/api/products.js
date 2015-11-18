@@ -6,7 +6,7 @@ var cors = require('cors');
 var security = require('../security');
 
 router.get('/', cors(), function(req, res) {
-  Product.find({}).lean().exec()
+  Product.find(req.query).lean().exec()
   .then(function(docs) {
     res.json(docs);
   })
