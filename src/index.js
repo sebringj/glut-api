@@ -13,5 +13,5 @@ app.use(bodyParser.json());
 app.use('/api', require('./api'));
 
 app.listen(config.port, function() {
-	console.log('glut-api started on port ' + config.port);
+  console.log('glut-api started on port ' + config.port);
 });
