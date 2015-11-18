@@ -4,6 +4,7 @@
   "description": "api for the glut ecommerce system",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +21,14 @@
   "bugs": {
     "url": "https://github.com/sebringj/glut-api/issues"
   },
-  "homepage": "https://github.com/sebringj/glut-api#readme"
+  "homepage": "https://github.com/sebringj/glut-api#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "config": "^1.17.0",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^1.2.1"
+  }
 }
