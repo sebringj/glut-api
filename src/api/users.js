@@ -37,7 +37,16 @@ router.post('/', cors(),
     .catch(function(err) {
       res.status(500).send('server error');
     });
-  });
+  }
+);
+
+router.get('/verify', cors(), security.auth(), function(req, res) {
+  res.json(req.user);
+});
+
+router.get('/verify-admin', cors(), security.auth(), security.authAdmin(), function(req, res) {
+  res.json(req.user);
+});
 
 router.put('/:id', cors(), security.auth(), function(req, res) {
   User.findOneAndUpdate({ _id: req.params.id }, req.body).exec()

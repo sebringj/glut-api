@@ -10,7 +10,7 @@ passport.use(new JwtStrategy(config.passportJwtOptions, function(payload, done) 
   User.findOne({
     profiles: {
       $elemMatch: {
-        profileId: payload.profileId,
+        profileId: payload.id,
         provider: payload.provider
       }
     }
