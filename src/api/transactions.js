@@ -3,7 +3,6 @@
 var router = require('express').Router();
 var Transaction = require('glut-models').models.Transaction;
 var security = require('../security');
-var cors = require('cors');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.find(req.query).sort({ modified: -1 }).exec()
@@ -15,7 +14,7 @@ router.get('/', security.auth(), security.authAdmin(), function(req, res) {
 	});
 });
 
-router.post('/', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.post('/', security.auth(), security.authAdmin(), function(req, res) {
   var transaction = new Transaction(req.body);
   transaction.save()
   .then(function(doc) {
@@ -26,7 +25,7 @@ router.post('/', cors(), security.auth(), security.authAdmin(), function(req, re
   });
 });
 
-router.put('/:id', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.put('/:id', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.findOneAndUpdate({ _id: req.params.id }, req.body).exec()
   .then(function(doc) {
     res.json({ transaction: doc });
@@ -36,7 +35,7 @@ router.put('/:id', cors(), security.auth(), security.authAdmin(), function(req, 
   });
 });
 
-router.delete('/:id', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.delete('/:id', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.findOneAndRemove({ _id: req.params.id }).exec()
   .then(function(doc) {
     res.json({ transaction: doc });

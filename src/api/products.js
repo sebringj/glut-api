@@ -2,10 +2,9 @@
 
 var router = require('express').Router();
 var Product = require('glut-models').models.Product;
-var cors = require('cors');
 var security = require('../security');
 
-router.get('/', cors(), function(req, res) {
+router.get('/', function(req, res) {
   Product.find(req.query).lean().exec()
   .then(function(docs) {
     res.json(docs);
@@ -15,7 +14,7 @@ router.get('/', cors(), function(req, res) {
   });
 });
 
-router.post('/', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.post('/', security.auth(), security.authAdmin(), function(req, res) {
   var product = new Product(req.body);
   product.save()
   .then(function(doc, numAffected) {
@@ -26,7 +25,7 @@ router.post('/', cors(), security.auth(), security.authAdmin(), function(req, re
   });
 });
 
-router.put('/:id', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.put('/:id', security.auth(), security.authAdmin(), function(req, res) {
   Product.findOneAndUpdate({
     $or: [
       { _id: req.params.id },
@@ -41,7 +40,7 @@ router.put('/:id', cors(), security.auth(), security.authAdmin(), function(req, 
   });
 });
 
-router.delete('/:id', cors(), security.auth(), security.authAdmin(), function(req, res) {
+router.delete('/:id', security.auth(), security.authAdmin(), function(req, res) {
   Product.findOneAndRemove({
     $or: [
       { _id: req.params.id },
