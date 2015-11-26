@@ -5,3 +5,4 @@ dist/
 *.map
 .env
 .start
+.db

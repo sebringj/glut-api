@@ -27,12 +27,9 @@ module.exports = {
   auth: function() {
     return function(req, res, next) {
       passport.authenticate('jwt', { session: false }, function(err, user, info) {
-        if (err) { return res.status(500).send('server error'); }
         if (!user) { return res.status(403).send('unauthorized'); }
-        req.logIn(user, function(err) {
-          if (err) { return res.status(500).send('server error'); }
-          next();
-        });
+        req.user = user;
+        next();
       })(req, res, next);
     };
   },
