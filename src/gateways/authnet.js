@@ -22,31 +22,31 @@ function authenticate() {
 function createCustomer(options) {
   // ?? validation for email, creditCard and expirationDate
   return authNetRequest({
-  	createCustomerProfileRequest: {
-  		merchantAuthentication: merchantAuthentication,
-  		profile: {
-  			email: options.email,
-  			paymentProfiles: {
-  				customerType: 'individual',
-  				payment: {
-  					creditCard: {
-  						cardNumber: options.cardNumber,
-  						expirationDate: options.expirationDate
-  					}
-  				}
-  			}
-  		},
-  		validationMode: validationMode
-  	}
+    createCustomerProfileRequest: {
+      merchantAuthentication: merchantAuthentication,
+      profile: {
+        email: options.email,
+        paymentProfiles: {
+          customerType: 'individual',
+          payment: {
+            creditCard: {
+              cardNumber: options.cardNumber,
+              expirationDate: options.expirationDate
+            }
+          }
+        }
+      },
+      validationMode: validationMode
+    }
   });
 }
 
 function deleteCustomer(options) {
   return authNetRequest({
-  	deleteCustomerProfileRequest: {
-  		merchantAuthentication: merchantAuthentication,
-  		customerProfileId: options.customerProfileId
-  	}
+    deleteCustomerProfileRequest: {
+      merchantAuthentication: merchantAuthentication,
+      customerProfileId: options.customerProfileId
+    }
   });
 }
 
@@ -140,28 +140,30 @@ function getCustomerProfileIds() {
 
 function authNetRequest(json) {
   var promise = new Promise(function(resolve, reject) {
-		request({
-	    url: authNet.endpoint,
-	    json: true,
-	    body: json,
-	    method: 'post'
-	  }, function(err, httpResponse, body) {
-	    if (err) {
-	      reject({ err: 'auth.net error.' })
-	      return;
-	    }
-	    var parsedJson;
-	    try {
-	      parsedJson = JSON.parse(body.trim());
-	    } catch(ex) {}
-	    var resultCode = _.get(parsedJson, 'messages.resultCode');
-	    if (resultCode === 'Ok')
-	      resolve(parsedJson);
-	    else
-	      reject(parsedJson);
-	  });
-	});
-	return promise;
+    request({
+      url: authNet.endpoint,
+      json: true,
+      body: json,
+      method: 'post'
+    }, function(err, httpResponse, body) {
+      if (err) {
+        reject({
+          err: 'auth.net error.'
+        })
+        return;
+      }
+      var parsedJson;
+      try {
+        parsedJson = JSON.parse(body.trim());
+      } catch (ex) {}
+      var resultCode = _.get(parsedJson, 'messages.resultCode');
+      if (resultCode === 'Ok')
+        resolve(parsedJson);
+      else
+        reject(parsedJson);
+    });
+  });
+  return promise;
 }
 
 module.exports = {
