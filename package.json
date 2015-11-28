@@ -33,6 +33,7 @@
     "passport": "^0.3.2",
     "passport-jwt": "^1.2.1",
     "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react-dom": "^0.14.3",
+    "request": "^2.67.0"
   }
 }
