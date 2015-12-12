@@ -4,6 +4,8 @@ let router = require('express').Router();
 let User = require('glut-models').models.User;
 let security = require('../security');
 let _ = require('lodash');
+let config = require('config');
+let paymentProvider = require('../paymentProviders/' + config.paymentProvider);
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   User.find(req.query).sort({ modified: -1 }).exec()
@@ -39,6 +41,22 @@ router.post('/',
     });
   }
 );
+
+router.post('/customer', security.auth(), function(req, res) {
+  paymentProvider.createCustomer({
+    cardNumber: req.body.cardNumber,
+    expirationDate: req.body.expirationDate
+  })
+  .then(function(formOfPayment) {
+    return req.user.update({ _id: req.user._id }, { $push: { formsOfPayment: formOfPayment } });
+  })
+  .then(function(updated) {
+    res.json({ updated: updated });
+  })
+  .catch(function(err) {
+    res.status(500).send('server error');
+  });
+});
 
 router.get('/verify', security.auth(), function(req, res) {
   res.json(req.user);

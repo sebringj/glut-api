@@ -1,15 +1,18 @@
-var config = require('config');
-var request = require('request');
-var _ = require('lodash');
+'use strict';
 
-var authNet = config.gateways.authNet;
+let config = require('config');
+let request = require('request');
+let _ = require('lodash');
+let paymentUtils = require('../utils/payment');
 
-var merchantAuthentication = {
+let authNet = config.paymentProviders.authnet;
+
+let merchantAuthentication = {
   name: authNet.apiLoginId,
   transactionKey: authNet.transactionKey
 };
 
-var validationMode = authNet.sandbox ? 'testMode' : 'liveMode';
+let validationMode = authNet.sandbox ? 'testMode' : 'liveMode';
 
 function authenticate() {
   return authNetRequest({
@@ -20,25 +23,41 @@ function authenticate() {
 }
 
 function createCustomer(options) {
-  // ?? validation for email, creditCard and expirationDate
-  return authNetRequest({
-    createCustomerProfileRequest: {
-      merchantAuthentication: merchantAuthentication,
-      profile: {
-        email: options.email,
-        paymentProfiles: {
-          customerType: 'individual',
-          payment: {
-            creditCard: {
-              cardNumber: options.cardNumber,
-              expirationDate: options.expirationDate
+  let expDate = paymentUtils.parseExpiration(options.expirationDate);
+  let promise = new Promise(function(resolve, reject) {
+    authNetRequest({
+      createCustomerProfileRequest: {
+        merchantAuthentication: merchantAuthentication,
+        profile: {
+          email: options.email,
+          paymentProfiles: {
+            customerType: 'individual',
+            payment: {
+              creditCard: {
+                cardNumber: options.cardNumber,
+                expirationDate: expDate.month + '-' + expDate.year
+              }
             }
           }
-        }
-      },
-      validationMode: validationMode
-    }
+        },
+        validationMode: validationMode
+      }
+    })
+    .then(function(body) {
+      resolve({
+        customerId: _.get(body, 'customerId'),
+        paymentId: _.get(body, 'paymentId'),
+        gateway: 'authnet',
+        last4: paymentUtils.last4(options.cardNumber),
+        expMonth: paymentUtils.padLeft('00', expDate.month),
+        expYear: paymentUtils.padLeft('00', expDate.year)
+      });
+    })
+    .catch(function(err) {
+      reject(err);
+    });
   });
+  return promise;
 }
 
 function deleteCustomer(options) {
@@ -57,7 +76,7 @@ function updateCustomer(options) {
       merchantAuthentication: merchantAuthentication,
       profile: {
         email: options.email,
-        customerProfileId: options.customerProfileId
+        customerProfileId: options.customerId
       }
     }
   });
@@ -68,7 +87,7 @@ function updateCustomerPaymentProfile(options) {
   return authNetRequest({
     updateCustomerPaymentProfileRequest: {
       merchantAuthentication: merchantAuthentication,
-      customerProfileId: options.customerProfileId,
+      customerProfileId: options.customerId,
       paymentProfile: {
         payment: {
           creditCard: {
@@ -76,7 +95,7 @@ function updateCustomerPaymentProfile(options) {
             expirationDate: options.expirationDate
           }
         },
-        customerPaymentProfileId: options.customerPaymentProfileId
+        customerPaymentProfileId: options.paymentId
       },
       validationMode: validationMode
     }
@@ -105,19 +124,29 @@ function createTransaction(options) {
 
 function chargeCreditCard(options) {
   // ?? validation for amount, customerProfileId, paymentProfileId
-  return authNetRequest({
-    createCustomerProfileTransactionRequest: {
-      merchantAuthentication: merchantAuthentication,
-      transaction: {
-        profileTransAuthCapture: {
-          amount: options.amount,
-          customerProfileId: options.customerProfileId,
-          customerPaymentProfileId: options.customerPaymentProfileId,
-          cardCode: options.cardCode
+  let promise = new Promise(function(resolve, reject) {
+    authNetRequest({
+      createCustomerProfileTransactionRequest: {
+        merchantAuthentication: merchantAuthentication,
+        transaction: {
+          profileTransAuthCapture: {
+            amount: options.amount,
+            customerProfileId: options.customerId,
+            customerPaymentProfileId: options.paymentId,
+            cardCode: options.cardCode
+          }
         }
       }
-    }
+    })
+    .then(function(resp) {
+      resolve({
+        customerId: resp.customerProfileId,
+        paymentId: resp.paymentProfiles[0].customerPaym
+      });
+    })
+    .catch(reject);
   });
+  return promise;
 }
 
 function getCustomerProfile(options) {
@@ -125,7 +154,7 @@ function getCustomerProfile(options) {
   return authNetRequest({
     getCustomerProfileRequest: {
       merchantAuthentication: merchantAuthentication,
-      customerProfileId: options.customerProfileId
+      customerProfileId: options.customerId
     }
   });
 }
@@ -147,9 +176,7 @@ function authNetRequest(json) {
       method: 'post'
     }, function(err, httpResponse, body) {
       if (err) {
-        reject({
-          err: 'auth.net error.'
-        })
+        reject({ err: 'auth.net error.' });
         return;
       }
       var parsedJson;
@@ -166,14 +193,29 @@ function authNetRequest(json) {
   return promise;
 }
 
+function methods() {
+  var promise = new Promise(function(resolve, reject) {
+    resolve({
+      Visa: 'Visa',
+      MasterCard: 'Master Card',
+      AmericanExpress: 'American Express',
+      Discover: 'Discover',
+      JCB: 'JCB',
+      DinersClub: 'Diners Club'
+    });
+  });
+  return promise;
+}
+
 module.exports = {
-  authenticate: authenticate,
-  createCustomer: createCustomer,
-  deleteCustomer: deleteCustomer,
-  updateCustomer: updateCustomer,
-  updateCustomerPaymentProfile: updateCustomerPaymentProfile,
-  createTransaction: createTransaction,
-  chargeCreditCard: chargeCreditCard,
-  getCustomerProfile: getCustomerProfile,
-  getCustomerProfileIds: getCustomerProfileIds
+  authenticate,
+  createCustomer,
+  deleteCustomer,
+  updateCustomer,
+  updateCustomerPaymentProfile,
+  createTransaction,
+  chargeCreditCard,
+  getCustomerProfile,
+  getCustomerProfileIds,
+  methods
 };

@@ -1,8 +1,8 @@
 'use strict';
 
-var router = require('express').Router();
-var Transaction = require('glut-models').models.Transaction;
-var security = require('../security');
+let router = require('express').Router();
+let Transaction = require('glut-models').models.Transaction;
+let security = require('../security');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.find(req.query).sort({ modified: -1 }).exec()
@@ -44,5 +44,10 @@ router.delete('/:id', security.auth(), security.authAdmin(), function(req, res) 
     res.status(500).send('server error');
   });
 });
+
+router.post(
+  '/charge', security.auth(),
+  require('./transactions/charge')()
+);
 
 module.exports = router;
