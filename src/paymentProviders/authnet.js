@@ -122,7 +122,6 @@ function createTransaction(options) {
 }
 
 function chargeCreditCard(options) {
-  // ?? validation for amount, customerProfileId, paymentProfileId
   let promise = new Promise(function(resolve, reject) {
     authNetRequest({
       createCustomerProfileTransactionRequest: {
@@ -184,7 +183,7 @@ function authNetRequest(json) {
       } catch (ex) {}
       var resultCode = _.get(parsedJson, 'messages.resultCode');
       if (resultCode === 'Ok')
-        resolve({ refId: _.get(parsedJson, 'refId') });
+        resolve({ refId: _.get(parsedJson, 'transactionResponse.transId') });
       else
         reject({ message: _.get(parsedJson, 'messages.message[0].text') });
     });

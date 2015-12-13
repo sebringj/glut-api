@@ -76,12 +76,19 @@ module.exports = function() {
       let paymentRefId = values[0].refId;
       let data = values[1];
       let products = data.products;
+			let rawCart = [];
       let cartItems = _.map(products, function(product) {
-        let price = Number((product.sale ? product.salePrice : product.msrp).toFixed(2));
+        let price = (product.sale ? product.salePrice : product.msrp);
+				rawCart.push({
+          product,
+          quantity: product.quantity,
+          subtotal: product.quantity * price,
+          price
+        });
         return {
           product: product._id,
           quantity: product.quantity,
-          subtotal: Number((product.quantity * price).toFixed()),
+          subtotal: product.quantity * price,
           price
         };
       });
@@ -91,32 +98,35 @@ module.exports = function() {
         payer: req.body.payer,
         recipient: req.body.recipient,
         cart: cartItems,
-        shippingMethod: data.shippingMethod,
-        shippingAmount: Number(data.shippingAmount.toFixed(2)),
-        salesTax: Number(data.salesTax.toFixed(2)),
-        total: Number(data.total.toFixed(2)),
+        shippingMethod: req.body.shippingMethod,
+        shippingAmount: data.shippingAmount,
+        salesTax: data.salesTax,
+				subtotal: data.subtotal,
+        total: data.total,
         status: 'paid',
         paymentRefId
       };
       let transaction = new Transaction(transactionData);
       return Promise.all([
         transaction.save(),
-        transactionData
+        transactionData,
+				rawCart
       ]);
     })
     .then(function(values) {
-      let transactionData = values[1];
 			return Promise.all([
 				shippingProvider.methods(),
-				transactionData
+				values[1],
+				values[2]
 			]);
     })
     .then(function(values) {
 			let shippingMethods = values[0];
 			let transactionData = values[1];
-			_.assign(transactionData, { shippingLabel: shippingMethods[transactionData.shippingMethod] });
+			let rawCart = values[2];
+			_.assign(transactionData, { cart: rawCart, shippingLabel: shippingMethods[transactionData.shippingMethod] });
 			return email.sendReceipt({
-				to: transactionData.payer.email,
+				to: transactionData.payer.contact.email,
 				html: template.emailReceipt(transactionData)
 			});
     })
