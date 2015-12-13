@@ -42,5 +42,25 @@ module.exports = {
 		stateOrProvinceCode: process.env.SENDER_STATE_OR_PROVINCE_CODE,
 		postalCode: process.env.SENDER_POSTAL_CODE,
 		countryCode: process.env.SENDER_COUNTRY_CODE
+	},
+	email: {
+		provider: 'gmail',
+		providers: {
+			gmail: require('nodemailer').createTransport({
+				service: 'gmail',
+				auth: {
+					user: process.env.GMAIL_USER,
+					pass: process.env.GMAIL_PASS
+				}
+			})
+		},
+		receipt: {
+			from: process.env.EMAIL_RECEIPT_FROM,
+			subject: process.env.EMAIL_RECEIPT_SUBJECT,
+			notifyEmail: process.env.EMAIL_RECEIPT_NOTIFY_EMAIL
+		}
+	},
+	applicableSalesTax: {
+		CA: 0.08
 	}
 };

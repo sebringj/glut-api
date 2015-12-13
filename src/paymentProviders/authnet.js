@@ -108,13 +108,12 @@ function createTransaction(options) {
       merchantAuthentication: merchantAuthentication,
       transactionRequest: {
         transactionType: 'authCaptureTransaction',
-        // customer: options.customer,
         amount: options.amount,
         payment: {
           creditCard: {
-            cardNumber: options.creditCard.cardNumber,
-            expirationDate: options.creditCard.expirationDate,
-            cardCode: options.creditCard.cardCode
+            cardNumber: options.cardNumber,
+            expirationDate: options.expMonth + '-' + options.expYear,
+            cardCode: options.cvv2
           }
         }
       }
@@ -141,7 +140,7 @@ function chargeCreditCard(options) {
     .then(function(resp) {
       resolve({
         customerId: resp.customerProfileId,
-        paymentId: resp.paymentProfiles[0].customerPaym
+        paymentId: resp.paymentProfiles[0].customerPayment
       });
     })
     .catch(reject);
@@ -185,9 +184,9 @@ function authNetRequest(json) {
       } catch (ex) {}
       var resultCode = _.get(parsedJson, 'messages.resultCode');
       if (resultCode === 'Ok')
-        resolve(parsedJson);
+        resolve({ refId: _.get(parseJson, 'refId') });
       else
-        reject(parsedJson);
+        reject({ message: _.get(parseJson, 'messages.message[0].text') });
     });
   });
   return promise;

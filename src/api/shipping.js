@@ -1,10 +1,11 @@
 'use strict';
 
 let router = require('express').Router();
-let shipping = require('../shippingProviders/' + require('config').shippingProvider);
+let shippingProvider = require('../shippingProviders/' + require('config').shippingProvider);
+let shipping = require('../utils/shipping');
 
 router.get('/methods', function(req, res) {
-	shipping.methods()
+	shippingProvider.methods()
 	.then(function(methods) {
 		res.json(methods);
 	})
@@ -15,11 +16,14 @@ router.get('/methods', function(req, res) {
 
 router.post('/rates', function(req, res) {
 	shipping.rates(req.body)
-	.then(function(rates) {
-		res.json(rates);
+	.then(function(data) {
+		res.json(data.rates);
 	})
 	.catch(function(err) {
-		res.status(500).json({ err: 'shipping api' });
+		if (err && err.message)
+			res.status(400).json({ message: err.message });
+		else
+			res.status(500).json({ err: 'shipping api' });
 	});
 });
 

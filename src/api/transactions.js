@@ -1,8 +1,10 @@
 'use strict';
 
+let _ = require('lodash');
 let router = require('express').Router();
 let Transaction = require('glut-models').models.Transaction;
 let security = require('../security');
+let status = require('../utils/httpStatusCodes');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.find(req.query).sort({ modified: -1 }).exec()
@@ -10,18 +12,18 @@ router.get('/', security.auth(), security.authAdmin(), function(req, res) {
 		res.json(docs);
 	})
 	.catch(function(err) {
-		res.status(500).send('server error');
+		res.status(status.SERVER_ERROR).send('server error');
 	});
 });
 
 router.post('/', security.auth(), security.authAdmin(), function(req, res) {
-  var transaction = new Transaction(req.body);
+  let transaction = new Transaction(req.body);
   transaction.save()
   .then(function(doc) {
     res.json({ transaction: doc });
   })
   .catch(function(err) {
-    res.status(500).send('server error');
+    res.status(status.SERVER_ERROR).send('server error');
   });
 });
 
@@ -31,7 +33,7 @@ router.put('/:id', security.auth(), security.authAdmin(), function(req, res) {
     res.json({ transaction: doc });
   })
   .catch(function(err) {
-    res.status(500).send('server error');
+    res.status(status.SERVER_ERROR).send('server error');
   });
 });
 
@@ -41,13 +43,10 @@ router.delete('/:id', security.auth(), security.authAdmin(), function(req, res) 
     res.json({ transaction: doc });
   })
   .catch(function(err) {
-    res.status(500).send('server error');
+    res.status(status.SERVER_ERROR).send('server error');
   });
 });
 
-router.post(
-  '/charge', security.auth(),
-  require('./transactions/charge')()
-);
+router.post('/charge', require('./transactions/charge')());
 
 module.exports = router;

@@ -2,14 +2,36 @@
 
 let _ = require('lodash');
 
-module.exports = {
-	hasAllProps: function hasProperties(obj, arr) {
-		if (!Array.isArray(arr))
-			arr = [arr];
-		for (let item of arr) {
-			if (!_.has(obj, item))
-				return false;
-		}
-		return true;
+function hasProperties(obj, arr) {
+	if (!Array.isArray(arr))
+		arr = [arr];
+	for (let item of arr) {
+		if (!_.has(obj, item))
+			return false;
 	}
+	return true;
+}
+
+function isValidActor(actor) {
+	if (!hasAllProps(actor, [
+		'address', 'contact'
+	]))
+		return false;
+
+	if (!hasAllProps(actor.contact), [
+		'firstName', 'lastName', 'email', 'phone'
+	])
+		return false;
+
+	if (!hasAllProps(actor.address), [
+		'streets', 'city', 'stateOrProvince', 'countryCode', 'postalCode'
+	])
+		return false;
+
+	return true;
+}
+
+module.exports = {
+	hasAllProps: hasProperties,
+	isValidActor: isValidActor
 };
