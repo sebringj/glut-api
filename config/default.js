@@ -57,7 +57,7 @@ module.exports = {
 		receipt: {
 			from: process.env.EMAIL_RECEIPT_FROM,
 			subject: process.env.EMAIL_RECEIPT_SUBJECT,
-			notifyEmail: process.env.EMAIL_RECEIPT_NOTIFY_EMAIL
+			notifyEmail: process.env.EMAIL_RECEIPT_NOTIFY
 		}
 	},
 	applicableSalesTax: {

@@ -21,8 +21,6 @@ function sendReceipt(options) {
 		subject: config.email.receipt.subject,
 		bcc: config.email.receipt.notifyEmail
 	});
-	console.log('sendReceipt');
-	console.log(options);
 	return send(options);
 }
 
