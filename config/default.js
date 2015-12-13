@@ -19,8 +19,8 @@ module.exports = {
 	paymentProviders: {
 		authnet: {
 			sandbox: (process.env.AUTHNET_SANDBOX === 'true'),
-			apiLoginId: process.env.AUTHNET_LOGINID,
-			transactionKey: process.env.AUTHNET_TRANSACTIONKEY,
+			apiLoginId: process.env.AUTHNET_LOGIN_ID,
+			transactionKey: process.env.AUTHNET_TRANSACTION_KEY,
 			endpoint: process.env.AUTHNET_ENDPOINT
 		}
 	},

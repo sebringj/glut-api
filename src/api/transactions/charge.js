@@ -21,12 +21,12 @@ module.exports = function() {
       'shippingMethod', 'payer', 'recipient', 'cvv2',
       'cardNumber', 'expMonth', 'expYear', 'products'
     ])) {
-      res.status(status.BAD_PARAMS).json({ err: 'bad params' });
+      res.status(status.BAD_PARAMS).json({ err: 'bad initial params' });
       return;
     }
 
     if (!isValidActor(req.body.payer) || !isValidActor(req.body.recipient)) {
-      res.status(status.BAD_PARAMS).json({ err: 'bad params' });
+      res.status(status.BAD_PARAMS).json({ err: 'bad actors' });
       return;
     }
 
@@ -46,23 +46,24 @@ module.exports = function() {
       let subtotal = 0;
       for (let product of products) {
         subtotal += _.get(product, 'quantity', 0) *
-        (product.sale ? _.get(product, 'salePrice', 0) : _.get(product, 'product.msrp', 0));
+        (product.sale ? _.get(product, 'salePrice', 0) : _.get(product, 'msrp', 0));
       }
 
       let payerAddress = req.body.payer.address;
 
-      let salesTax = 0;
+      let salesTaxRate = 0;
 
       if (payerAddress.countryCode === 'US' && applicableSalesTax[payerAddress.stateOrProvince])
-        salesTax = applicableSalesTax[payerAddress.stateOrProvince];
+        salesTaxRate = applicableSalesTax[payerAddress.stateOrProvince];
 
-      total += subtotal;
-      total += salesTax * total;
+			total += subtotal;
+			let salesTax = salesTaxRate * total;
+      total += salesTax;
       total += shippingAmount;
 
       return Promise.all([
         paymentProvider.createTransaction({
-          amount: total,
+          amount: Number(total.toFixed(2)),
           cardNumber: req.body.cardNumber,
           expMonth: req.body.expMonth,
           expYear: req.body.expYear,
@@ -76,11 +77,11 @@ module.exports = function() {
       let data = values[1];
       let products = data.products;
       let cartItems = _.map(products, function(product) {
-        let price = product.sale ? product.salePrice : product.msrp;
+        let price = Number((product.sale ? product.salePrice : product.msrp).toFixed(2));
         return {
           product: product._id,
           quantity: product.quantity,
-          subtotal: product.quantity * price,
+          subtotal: Number((product.quantity * price).toFixed()),
           price
         };
       });
@@ -91,10 +92,10 @@ module.exports = function() {
         recipient: req.body.recipient,
         cart: cartItems,
         shippingMethod: data.shippingMethod,
-        shippingAmount: data.shippingAmount,
-        salesTax: data.salesTax,
-        total: data.total,
-        status: 'completed',
+        shippingAmount: Number(data.shippingAmount.toFixed(2)),
+        salesTax: Number(data.salesTax.toFixed(2)),
+        total: Number(data.total.toFixed(2)),
+        status: 'paid',
         paymentRefId
       };
       let transaction = new Transaction(transactionData);
@@ -123,18 +124,11 @@ module.exports = function() {
 			res.json({ message: 'success' });
 		})
     .catch(function(err) {
+			console.log(err);
       if (err && err.message)
         res.status(status.BAD_PARAMS).json({ message: err.message });
       else
         res.status(status.SERVER_ERROR).json({ err: 'server error' });
-    });
-    var transaction = new Transaction(req.body);
-    transaction.save()
-    .then(function(doc) {
-      res.json({ transaction: doc });
-    })
-    .catch(function(err) {
-      res.status(500).send('server error');
     });
   };
 };

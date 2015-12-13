@@ -184,9 +184,9 @@ function authNetRequest(json) {
       } catch (ex) {}
       var resultCode = _.get(parsedJson, 'messages.resultCode');
       if (resultCode === 'Ok')
-        resolve({ refId: _.get(parseJson, 'refId') });
+        resolve({ refId: _.get(parsedJson, 'refId') });
       else
-        reject({ message: _.get(parseJson, 'messages.message[0].text') });
+        reject({ message: _.get(parsedJson, 'messages.message[0].text') });
     });
   });
   return promise;
