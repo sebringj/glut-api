@@ -15,6 +15,7 @@ module.exports = {
 		issuer: process.env.JWT_ISSUER,
 		secretOrKey: process.env.JWT_SECRET
 	},
+	hallpassUrl: process.env.HALLPASS_URL,
 	paymentProvider: process.env.PAYMENT_PROVIDER,
 	paymentProviders: {
 		authnet: {
