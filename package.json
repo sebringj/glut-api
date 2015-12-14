@@ -30,6 +30,7 @@
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "handlebars": "^4.0.5",
+    "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
     "nodemailer": "^1.10.0",
     "passport": "^0.3.2",
