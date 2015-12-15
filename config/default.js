@@ -9,7 +9,9 @@ while (process.env['SENDER_STREET_' + inc]) {
 
 module.exports = {
 	port: process.env.PORT,
-	// mongo connection string
+	sslPort: process.env.SSL_PORT,
+	sslKey: process.env.SSL_KEY,
+	sslCert: process.env.SSL_CERT,
 	mongodb: process.env.MONGODB,
 	passportJwtOptions: {
 		issuer: process.env.JWT_ISSUER,

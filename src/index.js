@@ -6,6 +6,9 @@ let config = require('config');
 let mongoose = require('glut-models').mongoose;
 let bodyParser = require('body-parser');
 let cors = require('cors');
+let http = require('http');
+let https = require('https');
+let fs = require('fs');
 
 mongoose.connect(config.mongodb);
 
@@ -14,6 +17,10 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', require('./api'));
 
-app.listen(config.port, function() {
-  console.log('glut-api started on port ' + config.port);
-});
+if (config.sslPort)
+  https.createServer({
+    key: fs.readFileSync(config.sslKey),
+    cert: fs.readFileSync(config.sslCert)
+  }, app).listen(config.sslPort);
+else
+  http.createServer(app).listen(config.port);
