@@ -20,6 +20,7 @@ router.post('/rates', function(req, res) {
 		res.json(data.rates);
 	})
 	.catch(function(err) {
+		console.error(err);
 		if (err && err.message)
 			res.status(400).json({ message: err.message });
 		else
