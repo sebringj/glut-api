@@ -52,33 +52,50 @@ function rates(obj) {
 		        }
 		      }
 		    },
-				PackageCount: '1',
-		    RequestedPackageLineItems: {
-		      SequenceNumber: 1,
-		      GroupPackageCount: 1,
-		      Weight: {
-		        Units: 'LB',
-		        Value: '5.0'
-		      },
-		      Dimensions: {
-		        Length: 15,
-		        Width: 10,
-		        Height: 1,
-		        Units: 'IN'
-		      }
-		    }
+				PackageCount: obj.packages.length,
+		    RequestedPackageLineItems: _.map(obj.packages, function(objPackage) {
+					return {
+						SequenceNumber: objPackage.sequence,
+						GroupPackageCount: objPackage.groupPackageCount,
+						Weight: {
+							Units: objPackage.weight.unit,
+							Value: objPackage.weight.value
+						},
+						Dimensions: {
+							Length: objPackage.dimensions.length,
+			        Width: objPackage.dimensions.width,
+			        Height: objPackage.dimensions.height,
+			        Units: objPackage.dimensions.unit
+						}
+					};
+				})
 			}
 		}, function(err, res) {
 			if (err)
 				return reject(err);
 
 			let deliveryDay = _.get(res, 'RateReplyDetails[0].DeliveryDayOfWeek');
-			let total = _.get(res, 'RateReplyDetails[0].RatedShipmentDetails[0].ShipmentRateDetail.TotalNetCharge', {});
+			let rateReplyDetails = _.get(res, 'RateReplyDetails', []);
+			let total = 0;
+			let currency = 'USD';
+
+			rateReplyDetails.forEach(function(rateReplyDetail) {
+				let ratedShipmentDetails = _.get(rateReplyDetail, 'RatedShipmentDetails', []);
+				ratedShipmentDetails.forEach(function(ratedShipmentDetail) {
+					let objTotal = _.get(ratedShipmentDetail, 'ShipmentRateDetail.TotalNetCharge', {
+						Currency: 'USD',
+						Amount: 0
+					});
+					total += parseFloat(objTotal.Amount);
+					currency = objTotal.Currency;
+				});
+			});
+
 			resolve({
 				deliveryDay: deliveryDay,
 				total: {
-					currency: total.Currency,
-					amount: total.Amount
+					currency: currency,
+					amount: total
 				}
 			});
 		});

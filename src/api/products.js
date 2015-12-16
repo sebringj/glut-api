@@ -1,11 +1,26 @@
 'use strict';
 
-var router = require('express').Router();
-var Product = require('glut-models').models.Product;
-var security = require('../security');
+let router = require('express').Router();
+let Product = require('glut-models').models.Product;
+let security = require('../security');
+
+let publicFields = [
+  'upc', 'sku', 'quantity', 'digital', 'downloadUrl', 'physical',
+  'available', 'name', 'description', 'tags', 'medias', 'msrp',
+  'sale', 'salePrice', 'variants'
+];
+
+let nonPublicFields = [
+  'wholesale', 'weight', 'dimensions'
+];
 
 router.get('/', function(req, res) {
-  Product.find(req.query).lean().exec()
+  let fields;
+  if (req.user && req.user.isAdmin())
+    fields = publicFields.concat(nonPublicFields).join(' ');
+  else
+    fields = publicFields.join(' ');
+  Product.find(req.query, fields).lean().exec()
   .then(function(docs) {
     res.json(docs);
   })
@@ -15,7 +30,7 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', security.auth(), security.authAdmin(), function(req, res) {
-  var product = new Product(req.body);
+  let product = new Product(req.body);
   product.save()
   .then(function(doc, numAffected) {
     res.json({ product: doc, numAffected: numAffected });

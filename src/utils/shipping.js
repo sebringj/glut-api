@@ -3,6 +3,7 @@
 let shippingProvider = require('../shippingProviders/' + require('config').shippingProvider);
 let product = require('../utils/product');
 let hasAllProps = require('../utils/validation').hasAllProps;
+let calculatePackages = require('./packages').calculate;
 
 module.exports = {
 	rates: function(data) {
@@ -26,10 +27,10 @@ module.exports = {
 				]);
 			})
 			.then(function(values) {
-				resolve({
-					rates: values[0],
-					products: values[1]
-				});
+				let rates = values[0];
+				let products = values[1];
+				let packages = calculatePackages(products);
+				resolve({ rates, products, packages });
 			})
 			.catch(reject);
 		});
