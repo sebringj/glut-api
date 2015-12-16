@@ -15,12 +15,12 @@ module.exports = {
 				groupPackageCount: product.quantity,
 				weight: {
 					unit: _.get(product,'weight.unit', 'LB'),
-					value: _.get(product,'weight.value', 0)
+					value: Math.ceil(_.get(product,'weight.value', 0))
 				},
 				dimensions: {
-					length: _.get(product,'dimensions.length', 0),
-					width: _.get(product,'dimensions.width', 0),
-					height: _.get(product,'dimensions.height', 0),
+					length: Math.ceil(_.get(product,'dimensions.length', 0)),
+					width: Math.ceil(_.get(product,'dimensions.width', 0)),
+					height: Math.ceil(_.get(product,'dimensions.height', 0)),
 					unit: _.get(product,'dimensions.unit', 'IN')
 				}
 			};
