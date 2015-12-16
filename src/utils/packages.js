@@ -14,14 +14,14 @@ module.exports = {
 				sequence: i,
 				groupPackageCount: 1,
 				weight: {
-					unit: product.weight.unit,
-					value: product.weight.value
+					unit: _.get(product,'weight.unit', 'LB'),
+					value: _.get(product,'weight.value', 0)
 				},
 				dimensions: {
-					length: product.dimensions.length,
-					width: product.dimensions.width,
-					height: product.dimensions.height,
-					unit: product.dimensions.unit
+					length: _.get(product,'dimensions.length', 0),
+					width: _.get(product,'dimensions.width', 0),
+					height: _.get(product,'dimensions.height', 0),
+					unit: _.get(product,'dimensions.unit', 'IN')
 				}
 			};
 		});

@@ -17,11 +17,13 @@ module.exports = {
 			product
 			.getValidProducts(data.products)
 			.then(function(products) {
+				var packages = calculatePackages(products)
 				return Promise.all([
 					shippingProvider.rates({
 						shippingMethod: data.shippingMethod,
 						address: data.address,
-						products
+						products,
+						packages
 					}),
 					products
 				]);
@@ -29,8 +31,7 @@ module.exports = {
 			.then(function(values) {
 				let rates = values[0];
 				let products = values[1];
-				let packages = calculatePackages(products);
-				resolve({ rates, products, packages });
+				resolve({ rates, products });
 			})
 			.catch(reject);
 		});
