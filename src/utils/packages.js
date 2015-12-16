@@ -12,7 +12,7 @@ module.exports = {
 			i++;
 			return {
 				sequence: i,
-				groupPackageCount: 1,
+				groupPackageCount: product.quantity,
 				weight: {
 					unit: _.get(product,'weight.unit', 'LB'),
 					value: _.get(product,'weight.value', 0)
