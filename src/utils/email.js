@@ -16,12 +16,22 @@ function send(options) {
 }
 
 function sendReceipt(options) {
-	_.assign(options, {
-		from: config.email.receipt.from,
-		subject: config.email.receipt.subject,
-		bcc: config.email.receipt.notifyEmail
-	});
-	return send(options);
+	let emails = [
+		send(_.assign({}, options, {
+			from: config.email.receipt.from,
+			subject: config.email.receipt.subject
+		}))
+	];
+	if (config.email.receipt.notifyEmail) {
+		emails.push(
+			send(_.assign({}, options, {
+				to: config.email.receipt.notifyEmail,
+				from: config.email.receipt.from,
+				subject: 'order: ' + config.email.receipt.subject
+			}))
+		);
+	}
+	return Promise.all(emails);
 }
 
 module.exports = { send, sendReceipt };
