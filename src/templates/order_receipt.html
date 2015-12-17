@@ -8,7 +8,8 @@
 	<table style="border:0;width:100%">
 		<tr><td colspan="2">receipt # <strong>{{paymentRefId}}</strong></td></tr>
 		<tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Purchased By</h2></td></tr>
-		<tr><td colspan="2">"{{payer.contact.firstName}} {{payer.contact.lastName}}" <{{payer.contact.email}}></td></tr>
+		<tr><td colspan="2">{{payer.contact.firstName}} {{payer.contact.lastName}}</td></tr>
+		<tr><td colspan="2">email: {{payer.contact.email}}</td></tr>
 		<tr><td colspan="2">phone: {{payer.contact.phone}}</td></tr>
 		<tr><td colspan="2" style="white-space:pre-line">{{ addressFormat payer.address.streets }}
 			{{ payer.address.city }}, {{ payer.address.stateOrProvince }} {{ payer.address.countryCode }} {{ payer.address.postalCode }}
@@ -17,7 +18,8 @@
 		<tr><td colspan="2">last 4 digits {{last4}}</td></tr>
 		<tr><td colspan="2">expires {{exp}}</td></tr>
 		<tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Ship To</h2></td></tr>
-		<tr><td colspan="2">"{{recipient.contact.firstName}} {{recipient.contact.lastName}}" <{{recipient.contact.email}}></td></tr>
+		<tr><td colspan="2">{{recipient.contact.firstName}} {{recipient.contact.lastName}}</td></tr>
+		<tr><td colspan="2">email: {{recipient.contact.email}}</td></tr>
 		<tr><td colspan="2">phone: {{recipient.contact.phone}}</td></tr>
 		<tr><td colspan="2" style="white-space:pre-line">{{ addressFormat recipient.address.streets }}
 			{{ recipient.address.city }}, {{ recipient.address.stateOrProvince }} {{ recipient.address.countryCode }} {{ recipient.address.postalCode }}
