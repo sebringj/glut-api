@@ -3,7 +3,8 @@
 let handlebars = require('handlebars');
 let fs = require('fs');
 
-let emailReceipt;
+let customerReceipt;
+let orderReceipt;
 
 handlebars.registerHelper('moneyFormat', function(number) {
 	if (typeof number !== 'number')
@@ -17,13 +18,21 @@ handlebars.registerHelper('addressFormat', function(arr) {
 	return arr.join('\n\r');
 });
 
-fs.readFile('./src/templates/email_receipt.html', 'utf8', function(err, data) {
+fs.readFile('./src/templates/customer_receipt.html', 'utf8', function(err, data) {
 	if (err) throw err;
-	emailReceipt = handlebars.compile(data);
+	customerReceipt = handlebars.compile(data);
+});
+
+fs.readFile('./src/templates/order_receipt.html', 'utf8', function(err, data) {
+	if (err) throw err;
+	orderReceipt = handlebars.compile(data);
 });
 
 module.exports = {
-	emailReceipt: function(data) {
-		return emailReceipt(data);
+	customerReceipt: function(data) {
+		return customerReceipt(data);
+	},
+	orderReceipt: function(data) {
+		return orderReceipt(data);
 	}
 };

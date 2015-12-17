@@ -15,23 +15,19 @@ function send(options) {
 	return promise;
 }
 
-function sendReceipt(options) {
-	let emails = [
-		send(_.assign({}, options, {
-			from: config.email.receipt.from,
-			subject: config.email.receipt.subject
-		}))
-	];
-	if (config.email.receipt.notifyEmail) {
-		emails.push(
-			send(_.assign({}, options, {
-				to: config.email.receipt.notifyEmail,
-				from: config.email.receipt.from,
-				subject: 'order: ' + config.email.receipt.subject
-			}))
-		);
-	}
-	return Promise.all(emails);
+function sendOrderReceipt(options) {
+	return send(_.assign(options, {
+		to: config.email.receipt.notifyEmail,
+		from: config.email.receipt.from,
+		subject: 'order receipt ' + (new Date()).toLocaleString()
+	}));
 }
 
-module.exports = { send, sendReceipt };
+function sendCustomerReceipt(options) {
+	return send(_.assign(options, {
+		from: config.email.receipt.from,
+		subject: config.email.receipt.subject
+	}));
+}
+
+module.exports = { send, sendOrderReceipt, sendCustomerReceipt };

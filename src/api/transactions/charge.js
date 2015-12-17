@@ -125,10 +125,15 @@ module.exports = function() {
 			let transactionData = values[1];
 			let rawCart = values[2];
 			_.assign(transactionData, { cart: rawCart, shippingLabel: shippingMethods[transactionData.shippingMethod] });
-			return email.sendReceipt({
-				to: transactionData.payer.contact.email,
-				html: template.emailReceipt(transactionData)
-			});
+			return Promise.all([
+        email.sendCustomerReceipt({
+          to: transactionData.payer.contact.email,
+          html: template.customerReceipt(transactionData)
+        }),
+        email.sendOrderReceipt({
+          html: template.orderReceipt(transactionData)
+        })
+      ]);
     })
 		.then(function() {
 			res.json({ message: 'success' });
