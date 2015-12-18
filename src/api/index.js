@@ -9,5 +9,6 @@ router.use('/variants', require('./variants'));
 router.use('/shipping', require('./shipping'));
 router.use('/payment', require('./payment'));
 router.use('/taxes', require('./taxes'));
+router.use('/invitations', require('./invitations'));
 
 module.exports = router;

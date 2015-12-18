@@ -27,7 +27,8 @@ module.exports = {
   auth: function() {
     return function(req, res, next) {
       passport.authenticate('jwt', { session: false }, function(err, user, info) {
-        if (!user) { return res.status(403).send('unauthorized'); }
+        if (!user)
+          return res.status(403).send('unauthorized');
         req.user = user;
         next();
       })(req, res, next);

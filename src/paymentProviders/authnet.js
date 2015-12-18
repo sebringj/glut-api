@@ -14,6 +14,57 @@ let merchantAuthentication = {
 
 let validationMode = authNet.sandbox ? 'testMode' : 'liveMode';
 
+function translateAddress(addressObj) {
+  let address = Array.isArray(addressObj.streets) ? addressObj.join(' ') : addressObj.streets;
+  let country = (addressObj.countryCode === 'US') ? 'USA' : addressObj.countryCode;
+  return {
+    firstName: addressObj.firstName,
+    lastName: addressObj.lastName,
+    address,
+    city: addressObj.city,
+    state: addressObj.stateOrProvince,
+    zip: addressObj.postalCode,
+    country
+  };
+}
+
+function translateTax(options) {
+  return {
+    amount: options.salesTax,
+    name: 'sales tax'
+  };
+}
+
+function translatePayment(options) {
+  return {
+    creditCard: {
+      cardNumber: options.cardNumber,
+      expirationDate: options.expMonth + '-' + options.expYear,
+      cardCode: options.cvv2
+    }
+  };
+}
+
+function translateShipping(options) {
+  return {
+    amount: options.shippingAmount,
+    name: options.shippingMethod
+  };
+}
+
+function translateLineItems(products) {
+  return _.map(products, function(product) {
+    return {
+      lineItem: {
+        itemId: product.upc,
+        name: product.name,
+        quantity: product.quantity,
+        unitPrice: product.unitPrice
+      }
+    };
+  });
+}
+
 function authenticate() {
   return authNetRequest({
     authenticateTestRequest: {
@@ -103,19 +154,20 @@ function updateCustomerPaymentProfile(options) {
 }
 
 function createTransaction(options) {
+
+  // translate data for authorize.net
   return authNetRequest({
     createTransactionRequest: {
       merchantAuthentication: merchantAuthentication,
       transactionRequest: {
         transactionType: 'authCaptureTransaction',
-        amount: options.amount,
-        payment: {
-          creditCard: {
-            cardNumber: options.cardNumber,
-            expirationDate: options.expMonth + '-' + options.expYear,
-            cardCode: options.cvv2
-          }
-        }
+        amount: options.total,
+        payment: translatePayment(options),
+        lineItems: translateLineItems(options.products),
+        tax: translateTax(options),
+        shipping: translateShipping(options),
+        billTo: translateAddress(options.payer),
+        shipTo: translateAddress(options.recipient)
       }
     }
   });

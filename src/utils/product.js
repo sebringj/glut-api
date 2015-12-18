@@ -17,6 +17,7 @@ module.exports = {
 					return reject({ message: 'No products found.' });
 				products.forEach(function(product) {
 					product.quantity = upcLookup[product.upc];
+					product.unitPrice = (product.sale ? _.get(product, 'salePrice', 0) : _.get(product, 'msrp', 0));
 				});
 				resolve(products);
 			})

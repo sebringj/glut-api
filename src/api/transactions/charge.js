@@ -45,8 +45,7 @@ module.exports = function() {
 
       let subtotal = 0;
       for (let product of products) {
-        subtotal += _.get(product, 'quantity', 0) *
-        (product.sale ? _.get(product, 'salePrice', 0) : _.get(product, 'msrp', 0));
+        subtotal += _.get(product, 'quantity', 0) * _.get(product, 'unitPrice', 0);
       }
 
       let payerAddress = req.body.payer.address;
@@ -61,15 +60,10 @@ module.exports = function() {
       total += salesTax;
       total += shippingAmount;
 
+      let passThrough = { products: data.products, total, salesTax, subtotal, shippingAmount };
       return Promise.all([
-        paymentProvider.createTransaction({
-          amount: Number(total.toFixed(2)),
-          cardNumber: req.body.cardNumber,
-          expMonth: req.body.expMonth,
-          expYear: req.body.expYear,
-          cvv2: req.body.cvv2
-        }),
-        { products, subtotal, salesTax, shippingAmount, total }
+        paymentProvider.createTransaction(_.assign({}, req.body, passThrough)),
+        passThrough
       ]);
     })
     .then(function(values) {
@@ -78,18 +72,17 @@ module.exports = function() {
       let products = data.products;
 			let rawCart = [];
       let cartItems = _.map(products, function(product) {
-        let price = (product.sale ? product.salePrice : product.msrp);
 				rawCart.push({
           product,
           quantity: product.quantity,
-          subtotal: product.quantity * price,
-          price
+          subtotal: product.quantity * product.unitPrice,
+          price: product.unitPrice
         });
         return {
           product: product._id,
           quantity: product.quantity,
-          subtotal: product.quantity * price,
-          price
+          subtotal: product.quantity * product.unitPrice,
+          price: product.unitPrice
         };
       });
       let transactionData = {
