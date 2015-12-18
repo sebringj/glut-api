@@ -11,23 +11,23 @@ let User = require('glut-models').models.User;
 let _ = require('lodash');
 
 router.post('/', security.auth(), security.authAdmin(), function(req, res) {
-	if (!hasAllProps(req.body, ['email']))
-		return res.status(status.BAD_PARAMS).json({ err: 'params missing' });
+  if (!hasAllProps(req.body, ['email']))
+    return res.status(status.BAD_PARAMS).json({ err: 'params missing' });
 
-		let roles = _.get(req, 'body.roles', []);
+    let roles = _.get(req, 'body.roles', []);
 
-		(new Invitation({
-			email: req.body.email,
-			sent: new Date(),
-			roles
-		}))
-		.save()
-		.then(function(invitation) {
-			res.json({ invitationId: invitation.invitationId });
-		})
-		.catch(function(err) {
-			res.status(status.SERVER_ERROR).json(err);
-		});
+    (new Invitation({
+      email: req.body.email,
+      sent: new Date(),
+      roles
+    }))
+    .save()
+    .then(function(invitation) {
+      res.json({ invitationId: invitation.invitationId });
+    })
+    .catch(function(err) {
+      res.status(status.SERVER_ERROR).json(err);
+    });
 });
 
 module.exports = router;

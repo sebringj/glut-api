@@ -1,36 +1,36 @@
 <div style="padding:20px;background-color:#E9E4E0;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;color:#3E1D13;font-size:14px;">
-	<div style="text-align:center;">
-		<img src="http://www.westcoastprimemeats.com/img/WCPM_logo.png">
-	</div>
-	<h1 style="font-size:25px;font-weight:700;text-align:center">RECEIPT</h1>
-	<div style="height:50px;background-image:url('http://www.westcoastprimemeats.com/img/line_flourish.png');
-	background-position:center center;background-repeat:no-repeat;"></div>
-	<table style="border:0;width:100%">
-		<tr><td colspan="2">Thank you, {{payer.contact.firstName}}, for your purchase!</td></tr>
-		<tr><td colspan="2">receipt # <strong>{{paymentRefId}}</strong></td></tr>
-		<tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Card Charged</h2></td></tr>
-		<tr><td colspan="2">last 4 digits {{last4}}</td></tr>
-		<tr><td colspan="2">expires {{exp}}</td></tr>
-		<tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Ship To</h2></td></tr>
-		<tr><td colspan="2" style="white-space:pre-line">{{ addressFormat recipient.address.streets }}
-			{{ recipient.address.city }}, {{ recipient.address.stateOrProvince }} {{ recipient.address.countryCode }} {{ recipient.address.postalCode }}
-		</td></tr>
-		<tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Purchased</h2></td></tr>
-		{{#each cart}}
-			<tr>
-				<td style="padding:5px 0">{{this.product.name}} @${{moneyFormat price}} each</td>
-				<td style="text-align:right;padding:5px 0">x{{quantity}} ${{moneyFormat subtotal}}</td>
-			</tr>
-			<tr><td colspan="2"><div style="border-bottom:1px solid #efefef;margin-bottom:5px;"></div></td></tr>
-		{{/each}}
-		<tr><td colspan="2" style="text-align:right"><strong>subtotal ${{moneyFormat subtotal}}</strong></td></tr>
-		{{#if salesTax}}
-			<tr><td colspan="2"style="text-align:right"><strong>sales tax ${{moneyFormat salesTax}}</strong></td></tr>
-		{{/if}}
-		{{#if shippingLabel}}
-			<tr><td colspan="2"style="text-align:right"><strong>{{shippingLabel}} ${{moneyFormat shippingAmount}}</strong></td></tr>
-		{{/if}}
-		<tr><td colspan="2" style="text-align:right;font-size:20px;"><strong>total ${{moneyFormat total}}</strong></td></tr>
-		<tr><td colspan="2" style="text-align:center;padding:10px 0">Please contact <a href="http://www.westcoastprimemeats.com/resources/contact">Customer Service</a> if you have any questions.</td></tr>
-	</table>
+  <div style="text-align:center;">
+    <img src="http://www.westcoastprimemeats.com/img/WCPM_logo.png">
+  </div>
+  <h1 style="font-size:25px;font-weight:700;text-align:center">RECEIPT</h1>
+  <div style="height:50px;background-image:url('http://www.westcoastprimemeats.com/img/line_flourish.png');
+  background-position:center center;background-repeat:no-repeat;"></div>
+  <table style="border:0;width:100%">
+    <tr><td colspan="2">Thank you, {{payer.contact.firstName}}, for your purchase!</td></tr>
+    <tr><td colspan="2">receipt # <strong>{{paymentRefId}}</strong></td></tr>
+    <tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Card Charged</h2></td></tr>
+    <tr><td colspan="2">last 4 digits {{last4}}</td></tr>
+    <tr><td colspan="2">expires {{exp}}</td></tr>
+    <tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Ship To</h2></td></tr>
+    <tr><td colspan="2" style="white-space:pre-line">{{ addressFormat recipient.address.streets }}
+      {{ recipient.address.city }}, {{ recipient.address.stateOrProvince }} {{ recipient.address.countryCode }} {{ recipient.address.postalCode }}
+    </td></tr>
+    <tr><td colspan="2"><h2 style="margin-bottom:0; padding-bottom: 0;">Purchased</h2></td></tr>
+    {{#each cart}}
+      <tr>
+        <td style="padding:5px 0">{{this.product.name}} @${{moneyFormat price}} each</td>
+        <td style="text-align:right;padding:5px 0">x{{quantity}} ${{moneyFormat subtotal}}</td>
+      </tr>
+      <tr><td colspan="2"><div style="border-bottom:1px solid #efefef;margin-bottom:5px;"></div></td></tr>
+    {{/each}}
+    <tr><td colspan="2" style="text-align:right"><strong>subtotal ${{moneyFormat subtotal}}</strong></td></tr>
+    {{#if salesTax}}
+      <tr><td colspan="2"style="text-align:right"><strong>sales tax ${{moneyFormat salesTax}}</strong></td></tr>
+    {{/if}}
+    {{#if shippingLabel}}
+      <tr><td colspan="2"style="text-align:right"><strong>{{shippingLabel}} ${{moneyFormat shippingAmount}}</strong></td></tr>
+    {{/if}}
+    <tr><td colspan="2" style="text-align:right;font-size:20px;"><strong>total ${{moneyFormat total}}</strong></td></tr>
+    <tr><td colspan="2" style="text-align:center;padding:10px 0">Please contact <a href="http://www.westcoastprimemeats.com/resources/contact">Customer Service</a> if you have any questions.</td></tr>
+  </table>
 </div>

@@ -8,12 +8,12 @@ let status = require('../utils/httpStatusCodes');
 
 router.get('/', security.auth(), security.authAdmin(), function(req, res) {
   Transaction.find(req.query).sort({ modified: -1 }).exec()
-	.then(function(docs) {
-		res.json(docs);
-	})
-	.catch(function(err) {
-		res.status(status.SERVER_ERROR).send('server error');
-	});
+  .then(function(docs) {
+    res.json(docs);
+  })
+  .catch(function(err) {
+    res.status(status.SERVER_ERROR).send('server error');
+  });
 });
 
 router.post('/', security.auth(), security.authAdmin(), function(req, res) {

@@ -55,8 +55,8 @@ module.exports = function() {
       if (payerAddress.countryCode === 'US' && applicableSalesTax[payerAddress.stateOrProvince])
         salesTaxRate = applicableSalesTax[payerAddress.stateOrProvince];
 
-			total += subtotal;
-			let salesTax = salesTaxRate * total;
+      total += subtotal;
+      let salesTax = salesTaxRate * total;
       total += salesTax;
       total += shippingAmount;
 
@@ -70,9 +70,9 @@ module.exports = function() {
       let paymentRefId = values[0].refId;
       let data = values[1];
       let products = data.products;
-			let rawCart = [];
+      let rawCart = [];
       let cartItems = _.map(products, function(product) {
-				rawCart.push({
+        rawCart.push({
           product,
           quantity: product.quantity,
           subtotal: product.quantity * product.unitPrice,
@@ -94,7 +94,7 @@ module.exports = function() {
         shippingMethod: req.body.shippingMethod,
         shippingAmount: data.shippingAmount,
         salesTax: data.salesTax,
-				subtotal: data.subtotal,
+        subtotal: data.subtotal,
         total: data.total,
         status: 'paid',
         paymentRefId
@@ -103,22 +103,22 @@ module.exports = function() {
       return Promise.all([
         transaction.save(),
         transactionData,
-				rawCart
+        rawCart
       ]);
     })
     .then(function(values) {
-			return Promise.all([
-				shippingProvider.methods(),
-				values[1],
-				values[2]
-			]);
+      return Promise.all([
+        shippingProvider.methods(),
+        values[1],
+        values[2]
+      ]);
     })
     .then(function(values) {
-			let shippingMethods = values[0];
-			let transactionData = values[1];
-			let rawCart = values[2];
-			_.assign(transactionData, { cart: rawCart, shippingLabel: shippingMethods[transactionData.shippingMethod] });
-			return Promise.all([
+      let shippingMethods = values[0];
+      let transactionData = values[1];
+      let rawCart = values[2];
+      _.assign(transactionData, { cart: rawCart, shippingLabel: shippingMethods[transactionData.shippingMethod] });
+      return Promise.all([
         email.sendCustomerReceipt({
           to: transactionData.payer.contact.email,
           html: template.customerReceipt(transactionData)
@@ -128,11 +128,11 @@ module.exports = function() {
         })
       ]);
     })
-		.then(function() {
-			res.json({ message: 'success' });
-		})
+    .then(function() {
+      res.json({ message: 'success' });
+    })
     .catch(function(err) {
-			console.log(err);
+      console.log(err);
       if (err && err.message)
         res.status(status.BAD_PARAMS).json({ message: err.message });
       else
