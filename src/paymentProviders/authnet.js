@@ -15,7 +15,7 @@ let merchantAuthentication = {
 let validationMode = authNet.sandbox ? 'testMode' : 'liveMode';
 
 function translateAddress(addressObj) {
-  let address = Array.isArray(addressObj.streets) ? addressObj.join(' ') : addressObj.streets;
+  let address = Array.isArray(addressObj.streets) ? addressObj.streets.join(' ') : addressObj.streets;
   let country = (addressObj.countryCode === 'US') ? 'USA' : addressObj.countryCode;
   return {
     firstName: addressObj.firstName,
