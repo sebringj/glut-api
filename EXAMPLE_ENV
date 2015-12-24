@@ -1,0 +1,37 @@
+# authorize.net vars
+export AUTHNET_LOGIN_ID='[authorize.net login id]'
+export AUTHNET_TRANSACTION_KEY='[authorize.net transaction key]'
+export AUTHNET_SANDBOX='[boolean sandbox mode]'
+export AUTHNET_ENDPOINT='[authorize.net endpoint URL]'
+
+# sender address
+export SENDER_STREET_1='[shipping sender street line 1]'
+#export SENDER_STREET_2='[shipping sender street line 2]'
+#export SENDER_STREET_3='[shipping sender street line 3]'
+export SENDER_CITY='[shipping sender city]'
+export SENDER_STATE_OR_PROVINCE_CODE='[shipping sender state]'
+export SENDER_POSTAL_CODE='[shipping sender postal code]'
+export SENDER_COUNTRY_CODE='[shipping sender country code ISO]'
+
+# applicable sales tax if billing US state is same as US state business has location(s)
+export APPLICABLE_SALES_TAX='CA=0.08, CO=0.029, FL=0.06'
+
+# choose shipping provider
+export SHIPPING_PROVIDER='fedex'
+
+# email settings
+export GMAIL_USER='[gmail username]'
+export GMAIL_PASS='[gmail password]'
+export EMAIL_RECEIPT_FROM='"sender name" <from@domain.com>'
+export EMAIL_RECEIPT_SUBJECT='email subject here'
+export EMAIL_RECEIPT_NOTIFY='admin store purchase notification list'
+
+# fedex settings
+# env  sandbox or live
+export FEDEX_KEY='[fedex api key]'
+export FEDEX_ENVIRONMENT='[fedex environment (sandbox, live)]'
+export FEDEX_DEBUG='[boolean debug mode]'
+export FEDEX_PASSWORD='[fedex api password]'
+export FEDEX_ACCOUNT_NUMBER='[fedex api account number]'
+export FEDEX_METER_NUMBER='[fedex api meter number]'
+export FEDEX_IMPERIAL='[boolean metrix system]'

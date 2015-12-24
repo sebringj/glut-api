@@ -62,7 +62,13 @@ module.exports = function() {
 
       let passThrough = { products: data.products, total, salesTax, subtotal, shippingAmount };
       return Promise.all([
-        paymentProvider.createTransaction(_.assign({}, req.body, passThrough)),
+        paymentProvider.createTransaction(
+          _.assign(
+            { customerIp: _.get(req, 'connection.remoteAddress') },
+            req.body,
+            passThrough
+          )
+        ),
         passThrough
       ]);
     })

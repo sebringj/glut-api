@@ -167,7 +167,8 @@ function createTransaction(options) {
         tax: translateTax(options),
         shipping: translateShipping(options),
         billTo: translateAddress(options.payer),
-        shipTo: translateAddress(options.recipient)
+        shipTo: translateAddress(options.recipient),
+        customerIP: options.customerIp
       }
     }
   });

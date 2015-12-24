@@ -7,7 +7,17 @@ while (process.env['SENDER_STREET_' + inc]) {
 	inc++;
 }
 
-module.exports = {
+let applicableSalesTax = {};
+let applicableSalesTaxPairs = process.env.APPLICABLE_SALES_TAX.split(',');
+applicableSalesTaxPairs.forEach(function(pair) {
+	let parts = pair.split('=');
+	let tax = parseFloat(parts[1].trim());
+	if (isNaN(tax))
+		throw parts[0].trim() + ' sales tax not number type';
+	applicableSalesTax[parts[0].trim()] = parseFloat(parts[1].trim());
+});
+
+let config = {
 	port: process.env.PORT,
 	sslPort: process.env.SSL_PORT,
 	sslKey: process.env.SSL_KEY,
@@ -63,7 +73,7 @@ module.exports = {
 			notifyEmail: process.env.EMAIL_RECEIPT_NOTIFY
 		}
 	},
-	applicableSalesTax: {
-		CA: 0.08
-	}
+	applicableSalesTax: applicableSalesTax
 };
+
+module.exports = config;
