@@ -1,4 +1,19 @@
-# authorize.net vars
+#!/bin/bash
+
+export PORT=[port number]
+export MONGODB='[connection string]'
+
+# JWT settings
+export JWT_ISSUER='[jwt issuer]'
+export JWT_SECRET='[jwt secret]'
+
+# hallpass
+export HALLPASS_URL='[hallpass url]'
+
+# choose payment gateway
+export PAYMENT_PROVIDER='authnet'
+
+# authorize.net
 export AUTHNET_LOGIN_ID='[authorize.net login id]'
 export AUTHNET_TRANSACTION_KEY='[authorize.net transaction key]'
 export AUTHNET_SANDBOX='[boolean sandbox mode]'

@@ -4,7 +4,6 @@ let _ = require('lodash');
 let config = require('config');
 
 function send(options) {
-
   return new Promise(function(resolve, reject) {
 		jwt.sign(
 			options,
@@ -21,7 +20,7 @@ function send(options) {
 						let json = JSON.parse();
 						resolve();
 					} catch(ex) {
-
+            reject(ex);
 					}
 				});
 			}
