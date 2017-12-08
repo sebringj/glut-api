@@ -27,6 +27,10 @@ let config = {
 		issuer: process.env.JWT_ISSUER,
 		secretOrKey: process.env.JWT_SECRET
 	},
+  letsEncrypt: {
+    domains: (process.env.LETSENCRYPT_DOMAINS || '').split(','),
+    email: process.env.LETSENCRYPT_EMAIL,
+  },
 	hallpassUrl: process.env.HALLPASS_URL,
 	paymentProvider: process.env.PAYMENT_PROVIDER,
 	paymentProviders: {

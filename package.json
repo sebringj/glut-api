@@ -29,6 +29,7 @@
     "config": "^1.17.0",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "greenlock-express": "^2.0.12",
     "handlebars": "^4.0.5",
     "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
