@@ -17,9 +17,22 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/api', require('./api'));
 
-http.createServer(app).listen(config.port);
-if (443)
-  https.createServer({
-    key: fs.readFileSync(config.sslKey),
-    cert: fs.readFileSync(config.sslCert)
-  }, app).listen(config.sslPort);
+const lex = require('greenlock-express').create({
+  server: 'production',
+  email: config.letsEncrypt.email,
+  agreeTos: true,
+  approveDomains: config.letsEncrypt.domains
+});
+
+if (config.doLocal)
+  require('http').createServer(app).listen(config.port, function() {
+    console.log('listening on port ' + this.address().port);
+  });
+else {
+  require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
+    console.log('Listening for ACME http-01 challenges on', this.address());
+  });
+  require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
+    console.log('Listening for ACME tls-sni-01 challenges and serve app on', this.address());
+  });
+}
